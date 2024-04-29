@@ -84,13 +84,13 @@ jobs:
     #       mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
     #       cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
       - name: Setup .NET SDK ${{env.DOTNETVERSION}}
-        if: false
+        if: true
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version:  '${{env.DOTNETVERSION}}'
 
       - name: Install .NET MAUI
-        if: false
+        if: true
         shell: bash
         run: |
           dotnet nuget locals all --clear 
