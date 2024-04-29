@@ -23,7 +23,7 @@ jobs:
             password: ${{ secrets.PARALLELS_PASSWORD }}
             insecure: true
             host_url: home.carloslapao.com:5470
-            base_vm: macOS_builder_maui
+            base_vm: macOS_builder
             start_after_op: true
         - name: Setup Machine Name
           run: echo "MACHINE_NAME=${{ steps.pull.outputs.vm_id }}" >> $GITHUB_ENV
