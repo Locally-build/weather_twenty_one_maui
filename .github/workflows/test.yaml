@@ -116,7 +116,7 @@ jobs:
         with:
           name: artifacts-ios
           path: |
-            bin/Debug/net8.0-ios/iossimulator-x64/**/*.app
+            bin/Debug/net8.0-ios/iossimulator-arm64/**/*.app
   clean_runner:
     if: always()
     needs: [buildiOS, create_runner]
