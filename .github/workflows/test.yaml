@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 env:
-    DOTNETVERSION: 6.0.300
+    DOTNETVERSION: 8.0.204
 jobs:
   create_runner:
     name: Deploy Self Hosted Runner
