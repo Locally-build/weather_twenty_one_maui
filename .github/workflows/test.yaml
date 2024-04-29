@@ -104,7 +104,7 @@ jobs:
       - name : Build iOS App
         shell: bash
         run: |
-          dotnet build -f net8.0-ios -c Debug /p:packageApp=false /p:buildForSimulator=true /p:ArchiveOnBuild=false
+          dotnet build -f net8.0-ios -c Debug /p:packageApp=false /p:buildForSimulator=true /p:ArchiveOnBuild=false /p:EnableCodeSigning=false
 
 #       - name: Build and Run UnitTests
 #         shell: bash
