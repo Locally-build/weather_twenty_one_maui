@@ -24,10 +24,14 @@ jobs:
             host_url: home.carloslapao.com:5470
             base_vm: Maui_DevBox
             start_after_op: true
+        - run: |
+            echo "VM ID: ${{ steps.pull.outputs.vm_id }}"
+            echo "VM Name: ${{ steps.pull.outputs.vm_name }}"
         - name: Configure Github Runner
           id: configure  
           uses: parallels/parallels-desktop-github-action@beta
           with:
+            max_attempts: 5
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
