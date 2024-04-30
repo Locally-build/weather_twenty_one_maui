@@ -1,4 +1,4 @@
-name: Build Android Apk
+name: Build Linux Test
 
 on:
   workflow_call:
@@ -22,7 +22,7 @@ jobs:
             password: ${{ secrets.PARALLELS_PASSWORD }}
             insecure: true
             host_url: home.carloslapao.com:5470
-            base_vm: Maui_DevBox
+            base_vm: ubuntu_action_runner_builder
             start_after_op: true
         - run: |
             echo "VM ID: ${{ steps.pull.outputs.vm_id }}"
