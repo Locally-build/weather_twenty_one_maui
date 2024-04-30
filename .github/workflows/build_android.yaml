@@ -26,7 +26,7 @@ jobs:
             start_after_op: true
         - name: Configure Github Runner
           id: configure  
-          uses: parallels/parallels-desktop-github-action@v1
+          uses: parallels/parallels-desktop-github-action@beta
           with:
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
