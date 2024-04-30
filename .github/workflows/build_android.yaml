@@ -15,7 +15,7 @@ jobs:
           uses: actions/checkout@v2
         - name: Clone VM
           id: pull
-          uses: parallels/parallels-desktop-github-action@v1
+          uses: parallels/parallels-desktop-github-action@beta
           with:
             operation: 'clone'
             username: ${{ secrets.PARALLELS_USERNAME }}
