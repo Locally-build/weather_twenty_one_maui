@@ -11,8 +11,11 @@ jobs:
     name: IOS App
     if: false
     uses: ./.github/workflows/build_ios.yaml
-  build_mac_catalysr:
+  build_mac_catalyst:
     name: Mac Catalyst App
     if: false
     uses: ./.github/workflows/build_mac_catalyst.yaml
-
+  build_android:
+    name: Android Apk
+    if: false
+    uses: ./.github/workflows/build_android.yaml
