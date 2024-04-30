@@ -40,12 +40,12 @@ jobs:
             insecure: true
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
-                curl -o c:\install-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/install-runner.ps1
-                curl -o c:\configure-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/configure-runner.ps1
-                curl -o c:\remove-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/remove-runner.ps1
+                curl -o /home/install-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/install-runner.ps1
+                curl -o /home/configure-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/configure-runner.ps1
+                curl -o /home/remove-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/remove-runner.ps1
 
-                powershell c:\install-runner.ps1
-                powershell c:\configure-runner.ps1 -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
+                /home/install-runner.ps1 -u parallels -p /home
+                /home/configure-runner.ps1 -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
     outputs:
         vm_id: ${{ steps.pull.outputs.vm_id }}
         vm_name: ${{ steps.pull.outputs.vm_name }}
