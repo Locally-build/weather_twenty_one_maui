@@ -63,7 +63,7 @@ jobs:
           dotnet-version:  '${{env.DOTNETVERSION}}'
           
       - name: List installed .NET info
-        shell: pwsh
+        shell: bash
         run: dotnet --info
 
       - name: Install .NET MAUI
