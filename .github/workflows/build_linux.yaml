@@ -22,7 +22,7 @@ jobs:
             password: ${{ secrets.PARALLELS_PASSWORD }}
             insecure: true
             host_url: home.carloslapao.com:5470
-            base_vm: ubuntu_action_runner_builder
+            base_vm: Ubuntu_Github_ActionRunner
             start_after_op: true
         - run: |
             echo "VM ID: ${{ steps.pull.outputs.vm_id }}"
