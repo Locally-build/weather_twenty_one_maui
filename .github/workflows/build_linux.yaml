@@ -22,7 +22,7 @@ jobs:
             password: ${{ secrets.PARALLELS_PASSWORD }}
             insecure: true
             host_url: home.carloslapao.com:5470
-            base_vm: Ubuntu_Github_ActionRunner
+            base_vm: ubuntu_action_runner_builder
             start_after_op: true
         - run: |
             echo "VM ID: ${{ steps.pull.outputs.vm_id }}"
@@ -40,12 +40,12 @@ jobs:
             insecure: true
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
-                curl -o /home/install-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/install-runner.ps1
-                curl -o /home/configure-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/configure-runner.ps1
-                curl -o /home/remove-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/remove-runner.ps1
+                curl -o /home/install-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/install-runner.sh
+                curl -o /home/configure-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/configure-runner.sh
+                curl -o /home/remove-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/remove-runner.sh
 
-                /home/install-runner.ps1 -u parallels -p /home
-                /home/configure-runner.ps1 -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
+                /home/install-runner.sh -u parallels -p /home
+                /home/configure-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
     outputs:
         vm_id: ${{ steps.pull.outputs.vm_id }}
         vm_name: ${{ steps.pull.outputs.vm_name }}
