@@ -45,7 +45,7 @@ jobs:
         vm_id: ${{ steps.pull.outputs.vm_id }}
         vm_name: ${{ steps.pull.outputs.vm_name }}
   buildWindows:
-    name: Build Android Apk
+    name: Build Windows msix
     needs: create_runner
     runs-on: 
         - self-hosted
