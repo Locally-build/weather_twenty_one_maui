@@ -70,7 +70,7 @@ jobs:
           run: dotnet --info
 
         - name: Install .NET MAUI
-          shell: bash
+          shell: pwsh
           run: |
             dotnet nuget locals all --clear 
             dotnet workload install maui --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
@@ -82,7 +82,7 @@ jobs:
 
           # https://docs.microsoft.com/en-us/dotnet/maui/android/deployment/overview
         - name : Build Android App
-          shell: bash
+          shell: pwsh
           run: |
             dotnet publish -f:net8.0-android -c:Release
 
