@@ -49,6 +49,7 @@ jobs:
         vm_name: ${{ steps.pull.outputs.vm_name }}
   buildmacCatalyst:
     name: Build Mac Catalyst App
+    needs: create_runner
     runs-on: 
         - self-hosted
         - macOS
