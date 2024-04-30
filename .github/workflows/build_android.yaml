@@ -93,7 +93,7 @@ jobs:
             path: |
               bin\Release\net8.0-android\publish\*.apk
   clean_runner:
-    if: false
+    if: always()
     needs: 
     - buildAndroid
     - create_runner

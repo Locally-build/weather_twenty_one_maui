@@ -107,7 +107,7 @@ jobs:
           path: |
             bin\Release\**\*.msix
   clean_runner:
-    if: false
+    if: always()
     needs: 
     - buildWindows
     - create_runner
