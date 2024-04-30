@@ -43,6 +43,10 @@ jobs:
                 curl -o /home/install-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/install-runner.sh
                 curl -o /home/configure-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/configure-runner.sh
                 curl -o /home/remove-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/remove-runner.sh
+                chmod +x /home/install-runner.sh
+                chmod +x /home/configure-runner.sh
+                chmod +x /home/remove-runner.sh
+
 
                 /home/install-runner.sh -u parallels -p /home
                 /home/configure-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
