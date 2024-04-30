@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_ios:
-    name: IOS App
+    name: iOS App
     if: false
     uses: ./.github/workflows/build_ios.yaml
   build_mac_catalyst:

@@ -119,7 +119,7 @@ jobs:
           path: |
             bin\Release\net8.0-android\publish\*.apk
   clean_runner:
-    if: always()
+    if: false
     needs: [ buildAndroid, create_runner ]
     name: Clean Runner
     runs-on: ubuntu-latest
