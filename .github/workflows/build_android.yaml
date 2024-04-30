@@ -15,7 +15,7 @@ jobs:
           uses: actions/checkout@v2
         - name: Clone VM
           id: pull
-          uses: parallels/parallels-desktop-github-action@beta
+          uses: parallels/parallels-desktop-github-action@v1
           with:
             operation: 'clone'
             username: ${{ secrets.PARALLELS_USERNAME }}
@@ -29,7 +29,7 @@ jobs:
             echo "VM Name: ${{ steps.pull.outputs.vm_name }}"
         - name: Configure Github Runner
           id: configure  
-          uses: parallels/parallels-desktop-github-action@beta
+          uses: parallels/parallels-desktop-github-action@v1
           with:
             max_attempts: 5
             timeout_seconds: 2
@@ -98,7 +98,7 @@ jobs:
             path: |
               bin\Release\net8.0-android\publish\*.apk
   clean_runner:
-    if: false
+    if: always()
     needs: 
     - buildAndroid
     - create_runner

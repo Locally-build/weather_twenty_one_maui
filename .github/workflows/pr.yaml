@@ -4,18 +4,19 @@ on:
   workflow_dispatch:
   pull_request:
     branches: 
-    - main1
+    - main
 
 jobs:
   build_ios:
     name: iOS App
-    if: false
     uses: ./.github/workflows/build_ios.yaml
   build_mac_catalyst:
     name: Mac Catalyst App
-    if: false
     uses: ./.github/workflows/build_mac_catalyst.yaml
   build_android:
     name: Android Apk
-    if: false
     uses: ./.github/workflows/build_android.yaml
+  build_windows:
+    name: Windows msix
+    uses: ./.github/workflows/build_windows.yaml
+
