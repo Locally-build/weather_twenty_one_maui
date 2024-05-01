@@ -71,7 +71,7 @@ jobs:
             insecure: true
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
             run: |
-                /home/remove-runner.sh -o Locally-build -t ${{ secrets.GH_PAT }}
+                /home/remove-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }}
         - name: Remove VM
           if: always()
           id: remove
