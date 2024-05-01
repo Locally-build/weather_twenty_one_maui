@@ -53,8 +53,8 @@ jobs:
     outputs:
         vm_id: ${{ steps.pull.outputs.vm_id }}
         vm_name: ${{ steps.pull.outputs.vm_name }}
-  buildAndroid:
-    name: Build Android Apk
+  build:
+    name: Build example
     needs: create_runner
     runs-on: 
         - self-hosted
@@ -73,39 +73,9 @@ jobs:
           shell: bash
           run: dotnet --info
 
-        - name: Install .NET MAUI
-          shell: bash
-          run: |
-            dotnet nuget locals all --clear 
-            dotnet workload install maui --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
-            dotnet workload install android maui wasm-tools --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
-
-        - name: Restore nuget packages
-          run: |
-            dotnet restore WeatherTwentyOne.sln
-
-          # https://docs.microsoft.com/en-us/dotnet/maui/android/deployment/overview
-        - name : Build Android App
-          shell: bash
-          run: |
-            dotnet publish -f:net8.0-android -c:Release
-
-        # - name: Build and Run UnitTests
-        #   shell: bash
-        #   run: |
-        #     dotnet build <path to unit test csproj>
-        #     dotnet test <path to unit test csproj> --no-build --verbosity normal
-
-        - uses: actions/upload-artifact@v2
-          with:
-            name: artifacts-android
-            path: |
-              bin\Release\net8.0-android\publish\*.apk
-
   clean_runner:
     if: always()
     needs:
-    - buildAndroid
     - create_runner
     name: Clean Runner
     runs-on: ubuntu-latest
