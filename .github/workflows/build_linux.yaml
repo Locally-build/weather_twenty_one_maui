@@ -1,4 +1,4 @@
-name: Build Linux Test
+name: Build Linux Example
 
 on:
   workflow_call:
