@@ -18,8 +18,8 @@ jobs:
           uses: parallels/parallels-desktop-github-action@v1
           with:
             operation: 'clone'
-            username: ${{ secrets.PARALLELS_USERNAME }}
-            password: ${{ secrets.PARALLELS_PASSWORD }}
+            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             insecure: true
             orchestrator_url: parallels.carloslapao.com
             base_vm: macOS_action_runner_builder
@@ -31,8 +31,8 @@ jobs:
             max_attempts: 5
             timeout_seconds: 2
             operation: 'run'
-            username: ${{ secrets.PARALLELS_USERNAME }}
-            password: ${{ secrets.PARALLELS_PASSWORD }}
+            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             orchestrator_url: parallels.carloslapao.com
             insecure: true
             machine_name: ${{ steps.pull.outputs.vm_id }}
@@ -131,8 +131,8 @@ jobs:
           uses: parallels/parallels-desktop-github-action@v1
           with:
             operation: 'run'
-            username: ${{ secrets.PARALLELS_USERNAME }}
-            password: ${{ secrets.PARALLELS_PASSWORD }}
+            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             host_url: home.carloslapao.com:5470
             insecure: true
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
@@ -144,8 +144,8 @@ jobs:
           uses: parallels/parallels-desktop-github-action@v1
           with:
             operation: 'delete'
-            username: ${{ secrets.PARALLELS_USERNAME }}
-            password: ${{ secrets.PARALLELS_PASSWORD }}
+            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             insecure: true
             host_url: home.carloslapao.com:5470
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
