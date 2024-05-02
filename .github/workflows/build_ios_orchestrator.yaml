@@ -21,7 +21,7 @@ jobs:
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             insecure: true
-            orchestrator_url: parallels.carloslapao.com
+            orchestrator_url: home.carloslapao.com:5470
             base_vm: macOS_action_runner_builder
             start_after_op: true
         - name: Configure Github Runner
@@ -33,7 +33,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            orchestrator_url: parallels.carloslapao.com
+            orchestrator_url: home.carloslapao.com:5470
             insecure: true
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
@@ -133,7 +133,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            host_url: home.carloslapao.com:5470
+            orchestrator_url: home.carloslapao.com:5470
             insecure: true
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
             run: |
@@ -147,5 +147,5 @@ jobs:
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             insecure: true
-            host_url: home.carloslapao.com:5470
+            orchestrator_url: home.carloslapao.com:5470
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
