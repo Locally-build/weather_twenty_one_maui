@@ -17,7 +17,7 @@ jobs:
           id: pull
           uses: parallels/parallels-desktop-github-action@v1
           with:
-            operation: 'clone'
+            operation: 'pull'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             insecure: true
