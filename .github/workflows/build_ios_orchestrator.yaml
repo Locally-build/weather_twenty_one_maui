@@ -1,0 +1,151 @@
+name: Build Orchestrator iOS App
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+env:
+    DOTNETVERSION: 8.0.204
+jobs:
+  create_runner:
+    name: Deploy Self Hosted Runner
+    runs-on: [self-hosted, ubuntu-latest]
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+        - name: Clone VM
+          id: pull
+          uses: parallels/parallels-desktop-github-action@v1
+          with:
+            operation: 'clone'
+            username: ${{ secrets.PARALLELS_USERNAME }}
+            password: ${{ secrets.PARALLELS_PASSWORD }}
+            insecure: true
+            orchestrator_url: parallels.carloslapao.com
+            base_vm: macOS_action_runner_builder
+            start_after_op: true
+        - name: Configure Github Runner
+          id: configure  
+          uses: parallels/parallels-desktop-github-action@v1
+          with:
+            max_attempts: 5
+            timeout_seconds: 2
+            operation: 'run'
+            username: ${{ secrets.PARALLELS_USERNAME }}
+            password: ${{ secrets.PARALLELS_PASSWORD }}
+            orchestrator_url: parallels.carloslapao.com
+            insecure: true
+            machine_name: ${{ steps.pull.outputs.vm_id }}
+            run: |
+                curl -o /Users/install-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/mac/install-runner.sh
+                curl -o /Users/configure-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/mac/configure-runner.sh
+                curl -o /Users/remove-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/mac/remove-runner.sh
+                chmod +x /Users/install-runner.sh
+                chmod +x /Users/configure-runner.sh
+                chmod +x /Users/remove-runner.sh
+
+                /Users/install-runner.sh -u parallels -p /Users
+                /Users/configure-runner.sh -u parallels -p /Users/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
+    outputs:
+        vm_id: ${{ steps.pull.outputs.vm_id }}
+        vm_name: ${{ steps.pull.outputs.vm_name }}
+  buildiOS:
+    name: Build iOS App
+    needs: create_runner
+    runs-on: 
+        - self-hosted
+        - macOS
+        - ${{ github.run_id }}_builder
+    steps:
+      - uses: actions/checkout@v2     
+      - name: Install the Apple certificate and provisioning profile
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.APPLE_BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.APPLE_P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.APPLE_BUILD_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode --output $PP_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          # apply provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+      - name: Setup .NET SDK ${{env.DOTNETVERSION}}
+        if: true
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version:  '${{env.DOTNETVERSION}}'
+
+      - name: Install .NET MAUI
+        if: true
+        shell: bash
+        run: |
+          dotnet nuget locals all --clear 
+          dotnet workload install maui --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
+          dotnet workload install android ios maccatalyst tvos macos maui wasm-tools --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
+    
+      - name: Restore nuget packages
+        run: |
+          dotnet restore WeatherTwentyOne.sln
+
+      - name : Build iOS App
+        shell: bash
+        run: |
+          dotnet build -f net8.0-ios -c Debug /p:packageApp=false /p:buildForSimulator=true /p:ArchiveOnBuild=false /p:EnableCodeSigning=false
+
+#       - name: Build and Run UnitTests
+#         shell: bash
+#         run: |
+#           dotnet build <path to unit test csproj>
+#           dotnet test <path to unit test csproj> --no-build --verbosity normal
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-ios
+          path: |
+            bin/Debug/net8.0-ios/iossimulator-arm64/**/*.app
+  clean_runner:
+    if: always()
+    needs: [buildiOS, create_runner]
+    name: Clean Runner
+    runs-on: ubuntu-latest
+    steps:
+        - name: Remove Github Runner
+          id: configure  
+          uses: parallels/parallels-desktop-github-action@v1
+          with:
+            operation: 'run'
+            username: ${{ secrets.PARALLELS_USERNAME }}
+            password: ${{ secrets.PARALLELS_PASSWORD }}
+            host_url: home.carloslapao.com:5470
+            insecure: true
+            machine_name: ${{ needs.create_runner.outputs.vm_id }}
+            run: |
+                /Users/remove-runner.sh -u parallels -p /Users/action-runner -o Locally-build -t ${{ secrets.GH_PAT }}
+        - name: Remove VM
+          if: always()
+          id: remove
+          uses: parallels/parallels-desktop-github-action@v1
+          with:
+            operation: 'delete'
+            username: ${{ secrets.PARALLELS_USERNAME }}
+            password: ${{ secrets.PARALLELS_PASSWORD }}
+            insecure: true
+            host_url: home.carloslapao.com:5470
+            machine_name: ${{ needs.create_runner.outputs.vm_id }}
