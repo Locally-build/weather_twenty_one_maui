@@ -22,7 +22,7 @@ jobs:
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             insecure: true
             orchestrator_url: home.carloslapao.com:5470
-            base_vm: macOS_action_runner_builder
+            base_image: http://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@parallels.carloslapao.com/MACOS-14-GITHUB-ACTION-RUNNER/v1
             start_after_op: true
         - name: Configure Github Runner
           id: configure  
