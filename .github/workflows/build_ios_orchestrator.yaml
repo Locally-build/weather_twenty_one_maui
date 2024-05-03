@@ -54,7 +54,6 @@ jobs:
     needs: create_runner
     runs-on: 
         - self-hosted
-        - macOS
         - ${{ github.run_id }}_builder
     steps:
       - uses: actions/checkout@v2     
