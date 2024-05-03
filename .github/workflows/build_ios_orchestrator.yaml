@@ -54,7 +54,7 @@ jobs:
     needs: create_runner
     runs-on: 
         - self-hosted
-        - ${{ github.run_id }}_builder
+        - macOS
     steps:
       - uses: actions/checkout@v2     
       - name: Install the Apple certificate and provisioning profile
