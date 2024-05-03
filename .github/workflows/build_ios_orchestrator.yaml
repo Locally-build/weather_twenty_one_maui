@@ -15,7 +15,7 @@ jobs:
           uses: actions/checkout@v2
         - name: Clone VM
           id: pull
-          uses: parallels/parallels-desktop-github-action@v1
+          uses: parallels/parallels-desktop-github-action@beta
           with:
             operation: 'pull'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
@@ -26,7 +26,7 @@ jobs:
             start_after_op: true
         - name: Configure Github Runner
           id: configure  
-          uses: parallels/parallels-desktop-github-action@v1
+          uses: parallels/parallels-desktop-github-action@beta
           with:
             max_attempts: 5
             timeout_seconds: 2
