@@ -47,7 +47,7 @@ jobs:
         vm_id: ${{ steps.pull.outputs.vm_id }}
         vm_name: ${{ steps.pull.outputs.vm_name }}
   build_windows_arm64:
-    name: Build Windows msix
+    name: Build Windows msix ARM64
     needs: create_runner
     runs-on: 
         - self-hosted
@@ -79,7 +79,7 @@ jobs:
                 bin\Release\net8.0-windows10.0.19041.0\win10-arm64\AppPackages\**\*.msix
 
   build_windows_x64:
-    name: Build Windows msix
+    name: Build Windows msix X64
     needs: create_runner
     runs-on: 
         - self-hosted
