@@ -79,7 +79,7 @@ jobs:
     - build
     - create_runner
     name: Clean Runner
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, ubuntu-latest]
     steps:
         - name: Remove Github Runner
           id: configure  
