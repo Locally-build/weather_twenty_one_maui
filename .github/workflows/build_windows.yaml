@@ -74,7 +74,7 @@ jobs:
 
       - name: Build Windows MSIX X64
         run: |
-          dotnet publish -f net8.0-windows10.0.19041.0 -c Release  --arch x64
+          dotnet publish -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifierOverride=win10-x64
 #       - name: Build and Run UnitTests
 #         shell: bash
 #         run: |
