@@ -74,7 +74,7 @@ jobs:
 
       - name: Build Windows MSIX X64
         run: |
-          dotnet publish -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifierOverride=win10-x64
+          dotnet publish -f net8.0-windows10.0.19041.0 -c Release /p:RuntimeIdentifierOverride=win10-x64 /p:UseRidGraph=true /p:Platform="x64"
 #       - name: Build and Run UnitTests
 #         shell: bash
 #         run: |
@@ -116,7 +116,7 @@ jobs:
         with:
             name: artifacts-windows-x64
             path: |
-                bin\Release\net8.0-windows10.0.19041.0\win10-arm64\AppPackages\**\*.msix
+                bin\x64\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\**\*.msix
   clean_runner:
     if: always()
     needs: 
