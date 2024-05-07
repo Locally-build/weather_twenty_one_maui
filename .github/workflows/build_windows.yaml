@@ -68,10 +68,13 @@ jobs:
           & dotnet workload install android ios maccatalyst tvos macos maui wasm-tools maui-maccatalyst --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
       
       # https://docs.microsoft.com/en-us/dotnet/maui/windows/deployment/overview
-      - name: Build Windows MSIX
+      - name: Build Windows MSIX ARM64
         run: |
           dotnet publish -f net8.0-windows10.0.19041.0 -c Release 
-          
+
+      - name: Build Windows MSIX X64
+        run: |
+          dotnet publish -f net8.0-windows10.0.19041.0 -c Release  --arch x64
 #       - name: Build and Run UnitTests
 #         shell: bash
 #         run: |
@@ -105,9 +108,15 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: artifacts-windows
-          path: |
-            bin\Release\**\*.msix
+            name: artifacts-windows-arm64
+            path: |
+                bin\Release\net8.0-windows10.0.19041.0\win10-arm64\AppPackages\**\*.msix
+
+      - uses: actions/upload-artifact@v2
+        with:
+            name: artifacts-windows-x64
+            path: |
+                bin\Release\net8.0-windows10.0.19041.0\win10-arm64\AppPackages\**\*.msix
   clean_runner:
     if: always()
     needs: 
