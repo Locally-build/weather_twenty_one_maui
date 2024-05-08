@@ -49,7 +49,7 @@ jobs:
     outputs:
         vm_id: ${{ steps.pull.outputs.vm_id }}
         vm_name: ${{ steps.pull.outputs.vm_name }}
-  buildAndroid:
+  build_android:
     name: Build Android Apk
     needs: create_runner
     runs-on: 
@@ -78,7 +78,7 @@ jobs:
 
         - name: Restore nuget packages
           run: |
-            dotnet restore WeatherTwentyOne.sln
+            dotnet restore WeatherTwentyOne.csprj
 
           # https://docs.microsoft.com/en-us/dotnet/maui/android/deployment/overview
         - name : Build Android App
@@ -100,7 +100,7 @@ jobs:
   clean_runner:
     if: always()
     needs: 
-    - buildAndroid
+    - build_android
     - create_runner
     name: Clean Runner
     runs-on: [self-hosted, ubuntu-latest]
