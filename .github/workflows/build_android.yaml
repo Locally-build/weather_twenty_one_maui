@@ -78,7 +78,7 @@ jobs:
 
         - name: Restore nuget packages
           run: |
-            dotnet restore WeatherTwentyOne.csproj
+            dotnet restore weather_twenty_one_maui.sln
 
           # https://docs.microsoft.com/en-us/dotnet/maui/android/deployment/overview
         - name : Build Android App
