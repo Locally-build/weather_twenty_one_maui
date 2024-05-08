@@ -32,7 +32,7 @@ jobs:
           uses: parallels/parallels-desktop-github-action@v1
           with:
             max_attempts: 5
-            timeout_seconds: 2
+            timeout_seconds: 5
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
