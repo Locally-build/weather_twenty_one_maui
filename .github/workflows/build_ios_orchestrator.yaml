@@ -9,19 +9,20 @@ env:
 jobs:
   create_runner:
     name: Deploy Self Hosted Runner
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on:
+    - self-hosted
+    - ubuntu-latest
     steps:
         - name: Checkout code
           uses: actions/checkout@v2
-        - name: Clone VM
+        - name: Pull VM
           id: pull
           uses: parallels/parallels-desktop-github-action@beta
           with:
             operation: 'pull'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            insecure: true
-            orchestrator_url: home.carloslapao.com:5470
+            orchestrator_url: devops.local-build.co
             base_image: http://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@parallels.carloslapao.com/MACOS-14-GITHUB-ACTION-RUNNER/v1
             start_after_op: true
         - name: Configure Github Runner
@@ -121,9 +122,13 @@ jobs:
             bin/Debug/net8.0-ios/iossimulator-arm64/**/*.app
   clean_runner:
     if: always()
-    needs: [buildiOS, create_runner]
+    needs:
+    - buildiOS
+    - create_runner
     name: Clean Runner
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on:
+    - self-hosted
+    - ubuntu-latest
     steps:
         - name: Remove Github Runner
           id: configure  
@@ -132,8 +137,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            orchestrator_url: home.carloslapao.com:5470
-            insecure: true
+            orchestrator_url: devops.local-build.co
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
             run: |
                 /Users/remove-runner.sh -u parallels -p /Users/action-runner -o Locally-build -t ${{ secrets.GH_PAT }}
@@ -145,6 +149,5 @@ jobs:
             operation: 'delete'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            insecure: true
-            orchestrator_url: home.carloslapao.com:5470
+            orchestrator_url: devops.local-build.co
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
