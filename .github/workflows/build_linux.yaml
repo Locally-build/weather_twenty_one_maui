@@ -20,8 +20,7 @@ jobs:
             operation: 'clone'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            insecure: true
-            host_url: home.carloslapao.com:5470
+            host_url: hosts.local-build.co:5681
             base_vm: ubuntu_action_runner_builder
             start_after_op: true
         - run: |
@@ -36,8 +35,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: home.carloslapao.com:5470
-            insecure: true
+            host_url: hosts.local-build.co:5681
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
                 curl -o /home/install-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/install-runner.sh
@@ -88,8 +86,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: home.carloslapao.com:5470
-            insecure: true
+            host_url: hosts.local-build.co:5681
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
             run: |
                 /home/remove-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }}
@@ -101,6 +98,5 @@ jobs:
             operation: 'delete'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            insecure: true
-            host_url: home.carloslapao.com:5470
+            host_url: hosts.local-build.co:5681
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
