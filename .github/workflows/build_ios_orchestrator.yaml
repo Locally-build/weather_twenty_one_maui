@@ -23,7 +23,7 @@ jobs:
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             orchestrator_url: devops.local-build.co
-            base_image: http://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@parallels.carloslapao.com/MACOS-14-GITHUB-ACTION-RUNNER/v1
+            base_image: http://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@catalog.local-build.co/MACOS-14-GITHUB-ACTION-RUNNER/v1
             start_after_op: true
         - name: Configure Github Runner
           id: configure  
