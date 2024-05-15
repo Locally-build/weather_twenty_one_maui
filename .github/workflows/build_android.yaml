@@ -9,7 +9,9 @@ env:
 jobs:
   create_runner:
     name: Deploy Self Hosted Runner
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on:
+    - self-hosted
+    - ubuntu-latest
     steps:
         - name: Checkout code
           uses: actions/checkout@v2
@@ -20,8 +22,7 @@ jobs:
             operation: 'clone'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            insecure: true
-            host_url: home.carloslapao.com:5470
+            host_url: devops.local-build.co
             base_vm: Maui_DevBox
             start_after_op: true
         - run: |
@@ -36,7 +37,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: home.carloslapao.com:5470
+            host_url: devops.local-build.co
             insecure: true
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
@@ -103,7 +104,9 @@ jobs:
     - build_android
     - create_runner
     name: Clean Runner
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on:
+    - self-hosted
+    - ubuntu-latest
     steps:
         - name: Remove Github Runner
           id: configure  
@@ -112,8 +115,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: home.carloslapao.com:5470
-            insecure: true
+            host_url: devops.local-build.co
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
             run: |
                 powershell c:\remove-runner.ps1 -o Locally-build -t ${{ secrets.GH_PAT }}
@@ -125,6 +127,5 @@ jobs:
             operation: 'delete'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            insecure: true
-            host_url: home.carloslapao.com:5470
+            host_url: devops.local-build.co
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
