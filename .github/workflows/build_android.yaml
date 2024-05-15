@@ -22,7 +22,7 @@ jobs:
             operation: 'clone'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: devops.local-build.co
+            host_url: hosts.local-build.co:5681
             base_vm: Maui_DevBox
             start_after_op: true
         - run: |
@@ -37,8 +37,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: devops.local-build.co
-            insecure: true
+            host_url: hosts.local-build.co:5681
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
                 curl -o c:\install-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/install-runner.ps1
@@ -115,7 +114,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: devops.local-build.co
+            host_url: hosts.local-build.co:5681
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
             run: |
                 powershell c:\remove-runner.ps1 -o Locally-build -t ${{ secrets.GH_PAT }}
@@ -127,5 +126,5 @@ jobs:
             operation: 'delete'
             username: ${{ secrets.PARALLELS_USERNAME }}
             password: ${{ secrets.PARALLELS_PASSWORD }}
-            host_url: devops.local-build.co
+            host_url: hosts.local-build.co:5681
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
