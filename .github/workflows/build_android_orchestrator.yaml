@@ -34,6 +34,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
+            orchestrator_url: devops.local-build.co
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
                 curl -o c:\install-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/install-runner.ps1
