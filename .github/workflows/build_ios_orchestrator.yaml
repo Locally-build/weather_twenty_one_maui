@@ -34,7 +34,7 @@ jobs:
             operation: 'run'
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            orchestrator_url: home.carloslapao.com:5470
+            orchestrator_url: devops.local-build.co
             insecure: true
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
