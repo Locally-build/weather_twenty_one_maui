@@ -90,7 +90,7 @@ jobs:
             orchestrator_url: devops.local-build.co
             machine_name: ${{ needs.create_runner.outputs.vm_id }}
             run: |
-                powershell c:\remove-runner.ps1 -o Locally-build -t ${{ secrets.GH_PAT }}
+                /home/remove-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }}
         - name: Remove VM
           if: always()
           id: remove
