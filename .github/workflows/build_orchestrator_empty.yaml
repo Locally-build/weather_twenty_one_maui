@@ -1,4 +1,4 @@
-name: Build Orchestrator Android App
+name: Build Orchestrator Empty
 
 on:
   workflow_call:
@@ -23,7 +23,7 @@ jobs:
             username: ${{ secrets.ORCHESTRATOR_USERNAME }}
             password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
             orchestrator_url: devops.local-build.co
-            base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@catalog.local-build.co/WINDOWS_11_DEVBOX/v1
+            base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@catalog.local-build.co/UBUNTU_GITHUB_ACTION_RUNNER/v1
             start_after_op: true
         - name: Configure Github Runner
           id: configure  
@@ -37,21 +37,25 @@ jobs:
             orchestrator_url: devops.local-build.co
             machine_name: ${{ steps.pull.outputs.vm_id }}
             run: |
-                curl -o c:\install-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/install-runner.ps1
-                curl -o c:\configure-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/configure-runner.ps1
-                curl -o c:\remove-runner.ps1 https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/windows/remove-runner.ps1
+                curl -o /home/install-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/install-runner.sh
+                curl -o /home/configure-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/configure-runner.sh
+                curl -o /home/remove-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/remove-runner.sh
+                chmod +x /home/install-runner.sh
+                chmod +x /home/configure-runner.sh
+                chmod +x /home/remove-runner.sh
 
-                powershell c:\install-runner.ps1
-                powershell c:\configure-runner.ps1 -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
+
+                /home/install-runner.sh -u parallels -p /home
+                /home/configure-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
     outputs:
         vm_id: ${{ steps.pull.outputs.vm_id }}
         vm_name: ${{ steps.pull.outputs.vm_name }}
-  build_android:
-    name: Build Android Apk
+  build:
+    name: Build example
     needs: create_runner
     runs-on: 
         - self-hosted
-        - Windows
+        - Linux
         - ${{ github.run_id }}_builder
 
     steps:
@@ -63,41 +67,13 @@ jobs:
             dotnet-version:  '${{env.DOTNETVERSION}}'
 
         - name: List installed .NET info
-          shell: pwsh
+          shell: bash
           run: dotnet --info
 
-        - name: Install .NET MAUI
-          shell: pwsh
-          run: |
-            dotnet nuget locals all --clear 
-            dotnet workload install maui --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
-            dotnet workload install android ios maccatalyst tvos macos maui wasm-tools --source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json --source https://api.nuget.org/v3/index.json
-
-        # - name: Restore nuget packages
-        #   run: |
-        #     dotnet restore weather_twenty_one_maui.sln
-
-          # https://docs.microsoft.com/en-us/dotnet/maui/android/deployment/overview
-        - name : Build Android App
-          shell: pwsh
-          run: |
-            dotnet publish -f:net8.0-android -c:Release
-
-        # - name: Build and Run UnitTests
-        #   shell: bash
-        #   run: |
-        #     dotnet build <path to unit test csproj>
-        #     dotnet test <path to unit test csproj> --no-build --verbosity normal
-
-        - uses: actions/upload-artifact@v2
-          with:
-            name: artifacts-android
-            path: |
-              bin\Release\net8.0-android\publish\*.apk
   clean_runner:
     if: always()
     needs:
-    - build_android
+    - build
     - create_runner
     name: Clean Runner
     runs-on:
