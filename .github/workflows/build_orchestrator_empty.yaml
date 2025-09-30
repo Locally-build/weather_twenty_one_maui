@@ -5,99 +5,99 @@ on:
   workflow_dispatch:
 
 env:
-    DOTNETVERSION: 8.0.204
+  DOTNETVERSION: 8.0.204
 jobs:
   create_runner:
     name: Deploy Self Hosted Runner
     runs-on:
-    - self-hosted
-    - ubuntu-latest
+      - self-hosted
+      - ubuntu-latest
     steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-        - name: Pull VM
-          id: pull
-          uses: parallels/parallels-desktop-github-action@v1
-          with:
-            operation: 'pull'
-            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
-            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            orchestrator_url: devops.local-build.co
-            base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@catalog.local-build.co/ubuntu-github-action-runner/v1
-            start_after_op: true
-        - name: Configure Github Runner
-          id: configure  
-          uses: parallels/parallels-desktop-github-action@v1
-          with:
-            max_attempts: 5
-            timeout_seconds: 2
-            operation: 'run'
-            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
-            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            orchestrator_url: devops.local-build.co
-            machine_name: ${{ steps.pull.outputs.vm_id }}
-            run: |
-                curl -o /home/install-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/install-runner.sh
-                curl -o /home/configure-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/configure-runner.sh
-                curl -o /home/remove-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/remove-runner.sh
-                chmod +x /home/install-runner.sh
-                chmod +x /home/configure-runner.sh
-                chmod +x /home/remove-runner.sh
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Pull VM
+        id: pull
+        uses: parallels/parallels-desktop-github-action@v1
+        with:
+          operation: "pull"
+          username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+          password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
+          orchestrator_url: devops-orchestrator.local-build.co
+          base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@catalog.local-build.co/ubuntu-latest/24.4
+          start_after_op: true
+      - name: Configure Github Runner
+        id: configure
+        uses: parallels/parallels-desktop-github-action@v1
+        with:
+          max_attempts: 5
+          timeout_seconds: 2
+          operation: "run"
+          username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+          password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
+          orchestrator_url: devops-orchestrator.local-build.co
+          machine_name: ${{ steps.pull.outputs.vm_id }}
+          run: |
+            curl -o /home/install-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/install-runner.sh
+            curl -o /home/configure-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/configure-runner.sh
+            curl -o /home/remove-runner.sh https://raw.githubusercontent.com/Parallels/prlctl-scripts/main/github/actions-runner/linux/remove-runner.sh
+            chmod +x /home/install-runner.sh
+            chmod +x /home/configure-runner.sh
+            chmod +x /home/remove-runner.sh
 
 
-                /home/install-runner.sh -u parallels -p /home
-                /home/configure-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
+            /home/install-runner.sh -u parallels -p /home
+            /home/configure-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }} -n ${{ github.run_id }}_builder -l ${{ github.run_id }}_builder
     outputs:
-        vm_id: ${{ steps.pull.outputs.vm_id }}
-        vm_name: ${{ steps.pull.outputs.vm_name }}
+      vm_id: ${{ steps.pull.outputs.vm_id }}
+      vm_name: ${{ steps.pull.outputs.vm_name }}
   build:
     name: Build example
     needs: create_runner
-    runs-on: 
-        - self-hosted
-        - Linux
-        - ${{ github.run_id }}_builder
+    runs-on:
+      - self-hosted
+      - Linux
+      - ${{ github.run_id }}_builder
 
     steps:
-        - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-        - name: Setup .NET SDK ${{env.DOTNETVERSION}}
-          uses: actions/setup-dotnet@v1
-          with:
-            dotnet-version:  '${{env.DOTNETVERSION}}'
+      - name: Setup .NET SDK ${{env.DOTNETVERSION}}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "${{env.DOTNETVERSION}}"
 
-        - name: List installed .NET info
-          shell: bash
-          run: dotnet --info
+      - name: List installed .NET info
+        shell: bash
+        run: dotnet --info
 
   clean_runner:
     if: always()
     needs:
-    - build
-    - create_runner
+      - build
+      - create_runner
     name: Clean Runner
     runs-on:
-    - self-hosted
-    - ubuntu-latest
+      - self-hosted
+      - ubuntu-latest
     steps:
-        - name: Remove Github Runner
-          id: configure  
-          uses: parallels/parallels-desktop-github-action@v1
-          with:
-            operation: 'run'
-            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
-            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            orchestrator_url: devops.local-build.co
-            machine_name: ${{ needs.create_runner.outputs.vm_id }}
-            run: |
-                /home/remove-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }}
-        - name: Remove VM
-          if: always()
-          id: remove
-          uses: parallels/parallels-desktop-github-action@v1
-          with:
-            operation: 'delete'
-            username: ${{ secrets.ORCHESTRATOR_USERNAME }}
-            password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
-            orchestrator_url: devops.local-build.co
-            machine_name: ${{ needs.create_runner.outputs.vm_id }}
+      - name: Remove Github Runner
+        id: configure
+        uses: parallels/parallels-desktop-github-action@v1
+        with:
+          operation: "run"
+          username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+          password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
+          orchestrator_url: devops-orchestrator.local-build.co
+          machine_name: ${{ needs.create_runner.outputs.vm_id }}
+          run: |
+            /home/remove-runner.sh -u parallels -p /home/action-runner -o Locally-build -t ${{ secrets.GH_PAT }}
+      - name: Remove VM
+        if: always()
+        id: remove
+        uses: parallels/parallels-desktop-github-action@v1
+        with:
+          operation: "delete"
+          username: ${{ secrets.ORCHESTRATOR_USERNAME }}
+          password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
+          orchestrator_url: devops-orchestrator.local-build.co
+          machine_name: ${{ needs.create_runner.outputs.vm_id }}
