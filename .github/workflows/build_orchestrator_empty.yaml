@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.ORCHESTRATOR_USERNAME }}
           password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
           orchestrator_url: devops-orchestrator.local-build.co
-          base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@devops-catalog.local-build.co/ubuntu-latest/24.04/${{ inputs.architecture }}
+          base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@devops-catalog.local-build.co/${{ inputs.architecture }}/ubuntu-latest/24.04
           start_after_op: true
       - name: Configure Github Runner
         id: configure
