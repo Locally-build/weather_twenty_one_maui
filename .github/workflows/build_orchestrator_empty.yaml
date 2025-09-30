@@ -3,7 +3,15 @@ name: Build Orchestrator Empty
 on:
   workflow_call:
   workflow_dispatch:
-
+    inputs:
+      architecture:
+        type: choice
+        required: true
+        default: arm64
+        options:
+          - arm64
+          - amd64
+        description: "Architecture of the runner to use"
 env:
   DOTNETVERSION: 8.0.204
 jobs:
@@ -23,7 +31,7 @@ jobs:
           username: ${{ secrets.ORCHESTRATOR_USERNAME }}
           password: ${{ secrets.ORCHESTRATOR_PASSWORD }}
           orchestrator_url: devops-orchestrator.local-build.co
-          base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@catalog.local-build.co/ubuntu-latest/24.4
+          base_image: https://root:${{ secrets.ORCHESTRATOR_PASSWORD }}@catalog.local-build.co/ubuntu-latest/24.4/${{ inputs.architecture }}
           start_after_op: true
       - name: Configure Github Runner
         id: configure
